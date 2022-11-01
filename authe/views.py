@@ -65,7 +65,7 @@ def Userview(request):
             user.created_by = request.user
             user.password = make_password(form.cleaned_data['password'])
             form.save()
-            return HttpResponse('data is stord')
+            return redirect('/homepage')
     return render(request,  'crud_depart.html', {'form': form})
 
 
@@ -104,7 +104,6 @@ def homepage(request):
 
 def logout_request(request):
     logout(request)
-
     messages.info(request, "You have successfully logged out.")
     return redirect("homepage")
 
@@ -123,12 +122,8 @@ class TicketList(generics.ListCreateAPIView):
     serializer_class = serializers.UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
 
 class TicketDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ticket_model.objects.all()
-    renderer_classes = [TicketTemplateHTMLRender]
     serializer_class = serializers.UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
